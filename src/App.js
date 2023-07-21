@@ -52,7 +52,6 @@ export default function App() {
         .catch(function (error) {
           console.log(error);
         });
-
       const cdata = lz.decompress(lz.decodeBase64(stateToLoad));
       setJson(cdata);
     };
@@ -64,24 +63,30 @@ export default function App() {
       <Typography variant="h5" align="center">
         Basic Page Editor
       </Typography>
-
       <Editor
-        resolver={{ Card, Button, Text, CardTop, CardBottom, Container }}
+        resolver={{
+          Card,
+          Button,
+          Text,
+          CardTop,
+          CardBottom,
+          Container,
+        }}
         enabled={enabled}
       >
-        <Topbar />
+        <Topbar data={json} />
         <Grid container spacing={3}>
           <Grid item xs>
-            <Frame json={json}>
+            <Frame>
               <Element is={Container} padding={5} background="#eee" canvas>
-                <Card />
+                {/* <Card />
                 <Button size="small" variant="outlined">
                   Click
                 </Button>
                 <Text size="small" text="Hi world!" />
                 <Element is={Container} padding={20} background="#f00" canvas>
                   <Text size="small" text="It's me again!" />
-                </Element>
+                </Element> */}
               </Element>
             </Frame>
           </Grid>

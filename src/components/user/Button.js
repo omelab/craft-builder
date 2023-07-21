@@ -3,7 +3,6 @@
 import React from 'react';
 import {
   Button as MaterialButton,
-  Grid,
   FormControl,
   FormLabel,
   RadioGroup,

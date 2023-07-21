@@ -1,5 +1,5 @@
 // components/Topbar.js
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import { useEditor } from '@craftjs/core';
 
 import {
@@ -11,7 +11,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   TextField,
   Snackbar,
@@ -20,7 +19,7 @@ import {
 import lz from 'lzutf8';
 import copy from 'copy-to-clipboard';
 
-export const Topbar = () => {
+export const Topbar = ({ data = null }) => {
   const { actions, query, enabled } = useEditor((state) => ({
     enabled: state.options.enabled,
   }));
@@ -28,6 +27,12 @@ export const Topbar = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState();
   const [stateToLoad, setStateToLoad] = useState(null);
+
+  useEffect(() => {
+    if (data) {
+      actions.deserialize(data);
+    }
+  }, [actions, data]);
 
   return (
     <Fragment>

@@ -4,8 +4,13 @@ import ContentEditable from 'react-contenteditable';
 import { Slider, FormControl, FormLabel } from '@material-ui/core';
 
 import { useNode } from '@craftjs/core';
+import { useEditor } from '@craftjs/core';
 
 export const Text = ({ text, fontSize, textAlign }) => {
+  const { enabled } = useEditor((state) => ({
+    enabled: state.options.enabled,
+  }));
+
   const {
     connectors: { connect, drag },
     isActive,
@@ -25,7 +30,10 @@ export const Text = ({ text, fontSize, textAlign }) => {
   }, [hasSelectedNode]);
 
   return (
-    <div ref={(ref) => connect(drag(ref))} onClick={(e) => setEditable(true)}>
+    <div
+      ref={(ref) => connect(drag(ref))}
+      onClick={(e) => setEditable(enabled ? true : false)}
+    >
       <ContentEditable
         disabled={!editable}
         html={text}
