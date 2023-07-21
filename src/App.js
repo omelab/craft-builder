@@ -1,8 +1,9 @@
 /* eslint-disable no-dupe-keys */
-import React, { Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Grid, Typography } from '@material-ui/core';
 import { Editor, Frame, Element } from '@craftjs/core';
+import lz from 'lzutf8';
 
 import { Toolbox } from './components/Toolbox';
 import { SettingsPanel } from './components/SettingsPanel';
@@ -12,6 +13,8 @@ import { Container } from './components/user/Container';
 import { Button } from './components/user/Button';
 import { Card, CardBottom, CardTop } from './components/user/Card';
 import { Text } from './components/user/Text';
+
+import axios from 'axios';
 
 const useStyles = makeStyles({
   root: {
@@ -33,16 +36,43 @@ const useStyles = makeStyles({
 
 export default function App() {
   const classes = useStyles();
+
+  const [enabled, setEnabled] = useState(true);
+
+  const [json, setJson] = useState(null);
+
+  // Load save state from server on page load
+  useEffect(() => {
+    const getData = async () => {
+      const stateToLoad = await axios
+        .get('http://127.0.0.1:3334/api/public/news/details?slug=test')
+        .then(function (response) {
+          return response.data.article;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      const cdata = lz.decompress(lz.decodeBase64(stateToLoad));
+      setJson(cdata);
+    };
+    getData();
+  }, []);
+
   return (
     <div className={classes.root}>
       <Typography variant="h5" align="center">
         Basic Page Editor
       </Typography>
-      <Topbar />
-      <Editor resolver={{ Card, Button, Text, CardTop, CardBottom, Container }}>
+
+      <Editor
+        resolver={{ Card, Button, Text, CardTop, CardBottom, Container }}
+        enabled={enabled}
+      >
+        <Topbar />
         <Grid container spacing={3}>
           <Grid item xs>
-            <Frame>
+            <Frame json={json}>
               <Element is={Container} padding={5} background="#eee" canvas>
                 <Card />
                 <Button size="small" variant="outlined">
